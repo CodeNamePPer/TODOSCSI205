@@ -1,0 +1,114 @@
+.calculator-body {
+    margin: 0;
+    display: grid;
+    min-height: 70vh;
+    place-items: center;
+    font-family: sans-serif;
+    padding: 20px 0;
+}
+
+.outer {
+    border-radius: 15px;
+    border: 3px solid black;
+    background-color: gray;
+}
+
+.inner {
+    padding: 10px;
+    border-radius: 15px;
+    border: 5px solid darkgray;
+    background-color: lightgray;
+    background-image: linear-gradient(to bottom,
+            #c0c0c0,
+            #f1f1f1);
+}
+
+.screen {
+    height: 3rem;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background-color: aqua;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0.5rem;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.inner .green {
+    background-image: linear-gradient(to bottom,
+            #48e750,
+            #f0f7f0);
+}
+
+.inner .red {
+    background-image: linear-gradient(to bottom,
+            #ee9191,
+            #f05f5f);
+}
+
+.inner .purple {
+    background-image: linear-gradient(to bottom,
+            #2fbae4,
+            #f1f1f1);
+}
+
+.student {
+    color: rgb(255, 255, 255);
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 3px;
+    font-family: monospace;
+    margin: 5px 0;
+    white-space: pre-line;
+}
+
+.btn-row {
+    margin: 5px 0 0 0;
+    display: flex;
+    gap: 4px;
+}
+
+.btn-row button {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    cursor: pointer;
+    border: 1px solid #777;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-row button:hover:enabled {
+    background-image: linear-gradient(to bottom,
+            #eaf1c1,
+            #f0f7f0);
+}
+
+.inner button.active,
+.inner button.active:hover {
+    background-image: linear-gradient(to bottom,
+            #ffe066,
+            #ffb700) !important;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+    transform: scale(0.95);
+    border-color: #cc8800;
+}
+
+.inner button.mr-active,
+.inner button.mr-active:hover {
+    background-image: linear-gradient(to bottom,
+            #ffe066,
+            #ffb700) !important;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+    transform: scale(0.95);
+    border-color: #cc8800;
+}
