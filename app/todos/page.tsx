@@ -26,7 +26,7 @@ import {
 } from "@/components/tailgrids/core/dialog";
 import { Input } from "@/components/tailgrids/core/input";
 import { Label } from "@/components/tailgrids/core/label";
-import { Trash1, Check, ClockThree, Plus, ArrowLeft, ArrowRight } from "@tailgrids/icons";
+import { Trash1, Check, ClockThree, Plus, ArrowLeft, ArrowRight, Reload } from "@tailgrids/icons";
 import { fetchTodos } from "../data/todos";
 import type { TodoType } from "../data/todos";
 
@@ -74,6 +74,7 @@ export default function TodosPage() {
         if (newTodoTitle.trim()) {
             const nextId = todosRaw.length > 0 ? Math.max(...todosRaw.map((t) => t.id)) + 1 : 1;
             const newTodo: TodoType = {
+                userId: 1,
                 id: nextId,
                 title: newTodoTitle.trim(),
                 completed: false,
@@ -85,30 +86,35 @@ export default function TodosPage() {
     };
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-    useEffect(() => {
-        const storedTodos = localStorage.getItem('todosRaw');
-        if (storedTodos !== null) {
-            try {
-                setTodosRaw(JSON.parse(storedTodos) as TodoType[]);
-                setLoading(false);
-                setIsLoaded(true);
-                return;
-            } catch (error) {
-                console.error("Failed to parse todos from localStorage:", error);
-            }
-        }
-
+    const loadTodos = () => {
+        setLoading(true);
         fetchTodos()
             .then((data) => {
                 setTodosRaw(data);
+                localStorage.setItem('todosRaw', JSON.stringify(data));
             })
-            .catch(() => {
-                setTodosRaw([]);
+            .catch((error) => {
+                console.error("Failed to fetch todos from API:", error);
+                const storedTodos = localStorage.getItem('todosRaw');
+                if (storedTodos !== null) {
+                    try {
+                        const parsed = JSON.parse(storedTodos) as TodoType[];
+                        setTodosRaw(parsed);
+                    } catch {
+                        setTodosRaw([]);
+                    }
+                } else {
+                    setTodosRaw([]);
+                }
             })
             .finally(() => {
                 setLoading(false);
                 setIsLoaded(true);
             });
+    };
+
+    useEffect(() => {
+        loadTodos();
     }, []);
 
     useEffect(() => {
@@ -155,17 +161,32 @@ export default function TodosPage() {
                         Waiting
                         <ClockThree className="size-3.5" />
                     </span>
+                    <span className="text-xs text-gray-500 font-medium ml-1">
+                        (Total: {todos.length})
+                    </span>
                 </div>
 
-                <div className="w-48">
-                    <NativeSelect
-                        value={itemsPerPage.toString()}
-                        onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                <div className="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        appearance="outline"
+                        size="sm"
+                        onClick={() => loadTodos()}
+                        className="h-10 px-3 text-xs flex items-center gap-1.5"
                     >
-                        <NativeSelectOption value="5">5 items per page</NativeSelectOption>
-                        <NativeSelectOption value="10">10 items per page</NativeSelectOption>
-                        <NativeSelectOption value="50">50 items per page</NativeSelectOption>
-                    </NativeSelect>
+                        <Reload className="size-3.5" />
+                        <span>Mock API</span>
+                    </Button>
+                    <div className="w-44">
+                        <NativeSelect
+                            value={itemsPerPage.toString()}
+                            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                        >
+                            <NativeSelectOption value="5">5 items per page</NativeSelectOption>
+                            <NativeSelectOption value="10">10 items per page</NativeSelectOption>
+                            <NativeSelectOption value="50">50 items per page</NativeSelectOption>
+                        </NativeSelect>
+                    </div>
                 </div>
             </div>
 

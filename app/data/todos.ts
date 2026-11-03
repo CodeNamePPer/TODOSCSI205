@@ -1207,14 +1207,18 @@ export type TodoType = {
     title: string
     completed: boolean
 }
-export const fetchTodos = () => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (Math.random() <= 0.8) { //80% success
-                resolve(todos.slice(0, 13))
-            } else { //20% fail
-                reject('connection refused')
-            }
-        }, 2000 + Math.random() * 3000) //1s-3s
-    })
-}
+export const fetchTodos = async (): Promise<TodoType[]> => {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/todos');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: TodoType[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch todos from API, falling back to local mock data:', error);
+        return todos;
+    }
+};
+
+export { todos };
